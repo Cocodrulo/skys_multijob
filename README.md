@@ -64,3 +64,4 @@ You can customize the resource in `Config.lua`:
 ## 📜 License
 
 This project is licensed under the [GPL-3.0 License](LICENSE).
+a
