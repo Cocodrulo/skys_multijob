@@ -3,6 +3,7 @@
         "MySQL",
         "Locale",
         "lib",
-        "cache"
+        "cache",
+        "locale"
     ]
 }

@@ -7,7 +7,7 @@ end
 
 framework.getJob = function (src)
     local Player = exports.qbx_core:GetPlayer(src) or type(src) == 'string' and exports.qbx_core:GetOfflinePlayer(src)
-    return Player?.job
+    return Player?.PlayerData?.job
 end
 
 framework.setJob = function (src, job, grade)

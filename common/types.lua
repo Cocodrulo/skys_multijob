@@ -1,13 +1,13 @@
---- @class multijob_entry
---- @field citizenid string
---- @field job string
---- @field grade number
-
 --- @class populated_multijob_entry
 --- @field citizenid string
 --- @field name string
 --- @field label string
 --- @field grade {name: string, level: number}
+
+--- @class employee_entry
+--- @field citizenid string
+--- @field charinfo { firstname: string, lastname: string, birthdate: string, gender: number, nationality: string }
+--- @field job {name: string, label: string, grade: {name: string, level: number}}
 
 --- @class framework_job
 --- @field name string

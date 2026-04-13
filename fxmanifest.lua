@@ -18,7 +18,7 @@ server_scripts {
 }
 
 files {
-    "config/shared.lua",
+    "common/config/shared.lua",
     "common/frameworks/framework.lua",
     "common/frameworks/**/client.lua",
     "common/frameworks/**/server.lua",

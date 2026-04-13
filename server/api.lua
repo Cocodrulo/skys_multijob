@@ -84,14 +84,19 @@ end
 api.getPlayerMultijob = function (citizenid)
     return cache('multijob:' .. citizenid, function()
         local multijob = exports.oxmysql.query_async(nil, 'SELECT * FROM player_multijob WHERE citizenid = ?', { citizenid })
+        local populatedMultijob = {}
         for _, job in ipairs(multijob) do
             local jobData = framework.getJobData(job.job)
-            job.job = nil
-            job.name = jobData.name
-            job.label = jobData.label
-            job.grade = jobData.grades[job.grade]
+            populatedMultijob[job.job] = {
+                name = job.job,
+                label = jobData.label,
+                grade = {
+                    name = jobData.grades[job.grade].name,
+                    level = job.grade
+                }
+            }
         end
-        return multijob
+        return populatedMultijob
     end, 10 * 60 * 1000)
 end
 
@@ -112,10 +117,10 @@ api.addJob = function (source, job, grade)
     local multijob = api.getPlayerMultijob(citizenid)
     if not multijob then return response(false, 'multijob_not_found') end
 
-    if config.separateOffDuty and startsWith(jobData.name, config.offDutyPrefix) then return response(false, 'cannot_add_offduty_job') end
+    if config.separateOffDuty and startsWith(job, config.offDutyPrefix) then return response(false, 'cannot_add_offduty_job') end
 
-    if multijob[jobData.name] then
-        if multijob[jobData.name].grade == grade then
+    if multijob[job] then
+        if multijob[job].grade == grade then
             return response(false, 'job_already_exists')
         end
 
@@ -123,15 +128,15 @@ api.addJob = function (source, job, grade)
             return response(false, 'invalid_grade')
         end
 
-        updateMultijobGradeInDatabase(citizenid, jobData.name, grade)
+        updateMultijobGradeInDatabase(citizenid, job, grade)
         return response(true, 'job_updated')
     end
 
     if config.maxJobs and tableSize(multijob) >= config.maxJobs then return response(false, 'max_jobs_reached') end
 
-    if containsProhibitedGroups(multijob, jobData.name) then return response(false, 'prohibited_job') end
+    if containsProhibitedGroups(multijob, job) then return response(false, 'prohibited_job') end
 
-    addMultijobToDatabase(citizenid, jobData.name, grade)
+    addMultijobToDatabase(citizenid, job, grade)
     return response(true, 'job_added')
 end
 
@@ -151,22 +156,41 @@ api.removeJob = function (source, job)
     local multijob = api.getPlayerMultijob(citizenid)
     if not multijob then return response(false, 'multijob_not_found') end
 
-    if not multijob[jobData.name] then return response(false, 'job_not_found') end
+    if not multijob[job] then return response(false, 'job_not_found') end
 
-    if framework.getJob(source).name == jobData.name then
+    local currentJob = framework.getJob(source)
+    if currentJob and (currentJob.name == job or (config.separateOffDuty and startsWith(currentJob.name, config.offDutyPrefix))) then
         framework.setJob(source, config.unemployedJob, 0)
     end
 
-    removeMultijobFromDatabase(citizenid, jobData.name)
+    removeMultijobFromDatabase(citizenid, job)
     return response(true, 'job_removed')
 end
 
 --- Gets all employees of a job
 --- @param job string
---- @return multijob_entry[]
+--- @return employee_entry[]
 api.getEmployees = function (job)
     return cache('employees:' .. job, function()
-        return exports.oxmysql.query_async(nil, 'SELECT * FROM player_multijob WHERE job = ?', { job })
+        local employees = exports.oxmysql.query_async(nil, 'SELECT citizenid, job, grade, charinfo FROM player_multijob JOIN players ON player_multijob.citizenid = players.citizenid WHERE job = ?', { job })
+        local populatedEmployees = {}
+        for _, employee in ipairs(employees) do
+            local jobData = framework.getJobData(employee.job)
+            populatedEmployees[employee.citizenid] = {
+                citizenid = employee.citizenid,
+                charinfo = json.decode(employee.charinfo),
+                job = {
+                    name = employee.job,
+                    label = jobData.label,
+                    grade = {
+                        name = jobData.grades[employee.grade].name,
+                        salary = jobData.grades[employee.grade].salary,
+                        level = employee.grade
+                    }
+                }
+            }
+        end
+        return populatedEmployees
     end, 10 * 60 * 1000)
 end
 
@@ -178,7 +202,7 @@ api.switchJob = function (source, job)
     local jobData = framework.getJobData(job)
     if not jobData then return response(false, 'job_data_not_found') end
 
-    if config.separateOffDuty and startsWith(jobData.name, config.offDutyPrefix) then return response(false, 'cannot_switch_to_offduty_job') end
+    if config.separateOffDuty and startsWith(job, config.offDutyPrefix) then return response(false, 'cannot_switch_to_offduty_job') end
 
     local citizenid = framework.getCitizenId(source)
     if not citizenid then return response(false, 'citizenid_not_found') end
@@ -186,11 +210,11 @@ api.switchJob = function (source, job)
     local playerJob = framework.getJob(source)
     local multijob = api.getPlayerMultijob(citizenid)
     if not playerJob or not multijob then return response(false, 'player_job_not_found') end
-    if not multijob[jobData.name] then return response(false, 'dont_have_job') end
+    if not multijob[job] then return response(false, 'dont_have_job') end
 
-    if playerJob.name == jobData.name and playerJob.grade.level == multijob[jobData.name].grade then return response(false, 'job_already_active') end
+    if playerJob.name == job and playerJob.grade.level == multijob[job].grade then return response(false, 'job_already_active') end
 
-    framework.setJob(source, jobData.name, multijob[jobData.name].grade.level)
+    framework.setJob(source, job, multijob[job].grade.level)
     return response(true, 'job_switched')
 end
 
