@@ -1,0 +1,23 @@
+{
+    "error": {
+        "switch_job": "No se pudo cambiar de trabajo",
+        "remove_job": "No se pudo quitar el trabajo",
+        "toggle_duty": "No se pudo cambiar de servicio"
+    },
+    "success": {
+        "switch_job": "Se cambió de trabajo a %s",
+        "remove_job": "Se quitó el trabajo %s",
+        "toggle_duty": "Se cambió de servicio a %s"
+    },
+    "menu": {
+        "title": "Menú de Multi-Job",
+        "current_job": "Trabajo actual.",
+        "select_job": "Selecciona este trabajo para cambiar a él.",
+        "set_job": "Asignar este trabajo como tu trabajo actual.",
+        "set_job_description": "Asignar este trabajo como tu trabajo actual.",
+        "toggle_duty": "Alternar estado de servicio.",
+        "toggle_duty_description": "Alternar tu estado de servicio para este trabajo.",
+        "remove_job": "Eliminar este trabajo.",
+        "remove_job_description": "Eliminar este trabajo de tu lista de trabajos múltiples."
+    }
+}

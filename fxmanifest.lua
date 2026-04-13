@@ -1,23 +1,26 @@
 fx_version "cerulean"
 game "gta5"
 
-author "Cocodrulo - QBCore"
+author "Cocodrulo"
 version "1.0.0"
-description "A multi-job script for QBCore framework"
+description "A multi-job script for any framework"
 
 shared_scripts {
-	'@qb-core/shared/locale.lua',
-    "Config.lua",
-	"locales/*.lua",
+	'@ox_lib/init.lua',
 }
 
 client_scripts {
-    "client/main.lua",
-    "client/exports.lua"
+    "client/main.lua"
 }
 
 server_scripts {
-    "@oxmysql/lib/MySQL.lua",
-    "server/main.lua",
-    "server/exports.lua"
+    "server/main.lua"
+}
+
+files {
+    "config/shared.lua",
+    "common/frameworks/framework.lua",
+    "common/frameworks/**/client.lua",
+    "common/frameworks/**/server.lua",
+    "locales/*.json"
 }

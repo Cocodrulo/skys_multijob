@@ -1,0 +1,23 @@
+{
+    "error": {
+        "switch_job": "Failed to switch job",
+        "remove_job": "Failed to remove job",
+        "toggle_duty": "Failed to toggle duty"
+    },
+    "success": {
+        "switch_job": "Switched job to %s",
+        "remove_job": "Removed job %s",
+        "toggle_duty": "Toggled duty to %s"
+    },
+    "menu": {
+        "title": "Multi-Job Menu",
+        "current_job": "Current job.",
+        "select_job": "Select this job to switch to it.",
+        "set_job": "Set this job as your current job.",
+        "set_job_description": "Set this job as your current job.",
+        "toggle_duty": "Toggle duty status.",
+        "toggle_duty_description": "Toggle your duty status for this job.",
+        "remove_job": "Remove this job.",
+        "remove_job_description": "Remove this job from your list of multiple jobs."
+    }
+}

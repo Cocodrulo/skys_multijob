@@ -1,50 +1,57 @@
 -- ====================|| VARIABLES || ==================== --
 
-local QBCore = exports['qb-core']:GetCoreObject({ 'Functions' })
+local api <const> = require('server.api')
+--- @type server_framework
+local framework <const> = require('common.frameworks.framework')
+local config <const> = require('common.config.server')
 
--- ====================|| FUNCTIONS || ==================== --
+-- ====================|| EVENTS || ==================== --
 
---- Handles when a player gets a new job.
---- @param source number
---- @param job table
-local onNewJob = function(source, job)
-    exports['qb-multijob']:AddJob(source, job.name, job.grade.level)
-end
-
---- Removes a job from the player's multijob list.
---- @param source number
---- @param job string
-local removeJob = function(source, job)
-    exports['qb-multijob']:RemoveJob(source, job)
-end
-
---- Toggles the duty status of the current job for the specified player.
---- @param source number
---- @param onDuty boolean
-local setDuty = function(source, onDuty)
-    exports['qb-multijob']:ToggleDuty(source, onDuty)
-end
-
---- Sets the current player job to the specified job if they have it in their multijob list.
---- @param source number
---- @param job string
-local setJob = function(source, job)
-    exports['qb-multijob']:SwitchJob(source, job)
-end
-
--- ====================|| CALLBACKS || ==================== --
-
-QBCore.Functions.CreateCallback('qb-multijob:server:getJobs', function(source, cb)
-    cb(exports['qb-multijob']:GetPlayerMultiJob(source))
+RegisterServerEvent('skys_masterjob:server:switchJob', function (job)
+    local src = source
+    if not api.switchJob(src, job) then
+        framework.notify(src, lib.locale('error.switch_job'), 'error')
+    else
+        local jobData = framework.getJobData(job)
+        framework.notify(src, lib.locale('success.switch_job', jobData.label), 'success')
+    end
 end)
 
--- ====================|| EVENTS HANDLERS || ==================== --
-
-AddEventHandler('QBCore:Server:OnJobUpdate', onNewJob)
-RegisterNetEvent('qb-multijob:server:remove', removeJob)
-RegisterNetEvent('qb-multijob:server:setJob', setJob)
-RegisterNetEvent('qb-multijob:server:setDuty', setDuty)
-AddEventHandler('QBCore:Server:OnPlayerUnload', function(source)
-    local citizenid = QBCore.Functions.GetPlayer(source).PlayerData.citizenid
-    RemoveFromCache(citizenid)
+RegisterServerEvent('skys_masterjob:server:removeJob', function (job)
+    local src = source
+    if not api.removeJob(src, job) then
+        framework.notify(src, lib.locale('error.remove_job'), 'error')
+    else
+        local jobData = framework.getJobData(job)
+        framework.notify(src, lib.locale('success.remove_job', jobData.label), 'success')
+    end
 end)
+
+RegisterServerEvent('skys_masterjob:server:toggleDuty', function (duty)
+    local src = source
+    if not api.toggleDuty(src, duty) then
+        framework.notify(src, lib.locale('error.toggle_duty'), 'error')
+    else
+        local jobData = framework.getJobData(framework.getJob(src).name)
+        framework.notify(src, lib.locale('success.toggle_duty', jobData.label), 'success')
+    end
+end)
+
+framework.onJobUpdate(function(source, job)
+    api.addJob(source, job.name, job.grade.level)
+end)
+
+-- ====================|| COMMANDS || ==================== --
+
+lib.addCommand(config.commandName, { help = lib.locale('command.description') }, function(source)
+    TriggerClientEvent('skys_multijob:client:openMenu', source, api.getPlayerMultijob(framework.getCitizenId(source)))
+end)
+
+-- ====================|| EXPORTS || ==================== --
+
+exports('AddJob', api.addJob)
+exports('RemoveJob', api.removeJob)
+exports('SwitchJob', api.switchJob)
+exports('ToggleDuty', api.toggleDuty)
+exports('GetPlayerMultijob', api.getPlayerMultijob)
+exports('GetEmployees', api.getEmployees)
