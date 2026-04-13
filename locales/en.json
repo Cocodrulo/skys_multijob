@@ -18,6 +18,8 @@
         "toggle_duty": "Toggle duty status.",
         "toggle_duty_description": "Toggle your duty status for this job.",
         "remove_job": "Remove this job.",
-        "remove_job_description": "Remove this job from your list of multiple jobs."
+        "remove_job_description": "Remove this job from your list of multiple jobs.",
+        "back": "Back",
+        "back_description": "Back to the previous menu."
     }
 }

@@ -18,6 +18,8 @@
         "toggle_duty": "Alternar estado de servicio.",
         "toggle_duty_description": "Alternar tu estado de servicio para este trabajo.",
         "remove_job": "Eliminar este trabajo.",
-        "remove_job_description": "Eliminar este trabajo de tu lista de trabajos múltiples."
+        "remove_job_description": "Eliminar este trabajo de tu lista de trabajos múltiples.",
+        "back": "Volver",
+        "back_description": "Volver al menú anterior."
     }
 }
