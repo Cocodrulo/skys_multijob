@@ -6,7 +6,6 @@
 
 ![FiveM](https://img.shields.io/badge/FiveM-Resource-blue?style=for-the-badge&logo=fivem)
 ![Lua](https://img.shields.io/badge/Lua-5.4-purple?style=for-the-badge&logo=lua)
-![Framework](https://img.shields.io/badge/Framework-QBX-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-GPL--3.0-green?style=for-the-badge)
 
 </div>
