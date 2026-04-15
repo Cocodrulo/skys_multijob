@@ -9,7 +9,9 @@ lib.locale()
 
 local openJobMenu = function (job, grade)
     local jobData = framework.getJobData(job)
-    local isCurrentJob = framework.getJob().name == job or config.separateOffDuty and job:sub(1, #config.offDutyPrefix) == config.offDutyPrefix
+    local currentJob = framework.getJob()
+    local isCurrentJob = currentJob.name == job or config.separateOffDuty and currentJob.name:gsub(config.offDutyPrefix, '') == job
+
     local options = {}
     if isCurrentJob then
         options = {
@@ -94,8 +96,9 @@ RegisterNetEvent('skys_multijob:client:openMenu', function (multijob)
     }
 
     for _, job in ipairs(multijob) do
+        local isCurrentJob = jobData.name == job.name or config.separateOffDuty and job.name:gsub(config.offDutyPrefix, '') == jobData.name
         table.insert(options, {
-            title = jobData.name == job.name and jobData.label .. '(Actual)' or job.label,
+            title = isCurrentJob and jobData.label .. '(Actual)' or job.label,
             description = job.grade.name,
             icon = 'fa-solid fa-briefcase',
             onSelect = function ()
