@@ -14,11 +14,11 @@ local openJobMenu = function (job, grade)
 
     local options = {
         isCurrentJob and {
-            title = locale('menu.remove_job'),
-            description = locale('menu.remove_job_description'),
-            icon = 'fa-solid fa-trash-can',
+            title = locale('menu.toggle_duty'),
+            description = locale('menu.toggle_duty_description'),
+            icon = 'fa-solid fa-toggle-off',
             onSelect = function ()
-                TriggerServerEvent('skys_multijob:server:removeJob', job)
+                TriggerServerEvent('skys_multijob:server:toggleDuty')
             end
         } or {
             title = locale('menu.select_job'),
@@ -29,11 +29,11 @@ local openJobMenu = function (job, grade)
             end
         },
         {
-            title = locale('menu.toggle_duty'),
-            description = locale('menu.toggle_duty_description'),
-            icon = 'fa-solid fa-toggle-off',
+            title = locale('menu.remove_job'),
+            description = locale('menu.remove_job_description'),
+            icon = 'fa-solid fa-trash-can',
             onSelect = function ()
-                TriggerServerEvent('skys_multijob:server:toggleDuty')
+                TriggerServerEvent('skys_multijob:server:removeJob', job)
             end
         },
         {
@@ -63,19 +63,19 @@ RegisterNetEvent('skys_multijob:client:openMenu', function (multijob)
 
     local options = {
         {
-            title = unemployedData.label,
+            title = jobData.name == config.unemployedJob and unemployedData.label..' '..locale('menu.current_job') or unemployedData.label,
             description = unemployedData.grades[0].name,
-            icon = 'fa-solid fa-briefcase',
+            icon = 'fa-solid fa-briefca_job',
             onSelect = function ()
                 openJobMenu(config.unemployedJob, 0)
             end
         }
     }
 
-    for _, job in ipairs(multijob) do
+    for _, job in pairs(multijob) do
         local isCurrentJob = jobData.name == job.name or config.separateOffDuty and job.name:gsub(config.offDutyPrefix, '') == jobData.name
         table.insert(options, {
-            title = isCurrentJob and jobData.label .. '(Actual)' or job.label,
+            title = isCurrentJob and jobData.label .. ' '..locale('menu.current_job') or job.label,
             description = job.grade.name,
             icon = 'fa-solid fa-briefcase',
             onSelect = function ()

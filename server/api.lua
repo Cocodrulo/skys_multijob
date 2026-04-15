@@ -210,11 +210,11 @@ api.switchJob = function (source, job)
     local playerJob = framework.getJob(source)
     local multijob = api.getPlayerMultijob(citizenid)
     if not playerJob or not multijob then return response(false, 'player_job_not_found') end
-    if not multijob[job] then return response(false, 'dont_have_job') end
+    if not multijob[job] and job ~= config.unemployedJob then return response(false, 'dont_have_job') end
 
     if playerJob.name == job and playerJob.grade.level == multijob[job].grade then return response(false, 'job_already_active') end
 
-    framework.setJob(source, job, multijob[job].grade.level)
+    framework.setJob(source, job, job == config.unemployedJob and 0 or multijob[job].grade.level)
     return response(true, 'job_switched')
 end
 

@@ -10,7 +10,7 @@ lib.locale()
 
 RegisterServerEvent('skys_multijob:server:switchJob', function (job)
     local src = source
-    if not api.switchJob(src, job) then
+    if not api.switchJob(src, job).success then
         framework.notify(src, locale('error.switch_job'), 'error')
     else
         local jobData = framework.getJobData(job)
@@ -20,7 +20,7 @@ end)
 
 RegisterServerEvent('skys_multijob:server:removeJob', function (job)
     local src = source
-    if not api.removeJob(src, job) then
+    if not api.removeJob(src, job).success then
         framework.notify(src, locale('error.remove_job'), 'error')
     else
         local jobData = framework.getJobData(job)
@@ -30,7 +30,7 @@ end)
 
 RegisterServerEvent('skys_multijob:server:toggleDuty', function (duty)
     local src = source
-    if not api.toggleDuty(src, duty) then
+    if not api.toggleDuty(src, duty).success then
         framework.notify(src, locale('error.toggle_duty'), 'error')
     else
         local jobData = framework.getJobData(framework.getJob(src).name)

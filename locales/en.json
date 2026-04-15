@@ -11,10 +11,9 @@
     },
     "menu": {
         "title": "Multi-Job Menu",
-        "current_job": "Current job.",
-        "select_job": "Select this job to switch to it.",
-        "set_job": "Set this job as your current job.",
-        "set_job_description": "Set this job as your current job.",
+        "current_job": "(Current)",
+        "select_job": "Set job",
+        "select_job_description": "Set this job as your current job.",
         "toggle_duty": "Toggle duty status.",
         "toggle_duty_description": "Toggle your duty status for this job.",
         "remove_job": "Remove this job.",
