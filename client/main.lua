@@ -12,62 +12,39 @@ local openJobMenu = function (job, grade)
     local currentJob = framework.getJob()
     local isCurrentJob = currentJob.name == job or config.separateOffDuty and currentJob.name:gsub(config.offDutyPrefix, '') == job
 
-    local options = {}
-    if isCurrentJob then
-        options = {
-            {
-                title = locale('menu.remove_job'),
-                description = locale('menu.remove_job_description'),
-                icon = 'fa-solid fa-trash-can',
-                onSelect = function ()
-                    TriggerServerEvent('skys_multijob:server:removeJob', job)
-                end
-            },
-            {
-                title = locale('menu.toggle_duty'),
-                description = locale('menu.toggle_duty_description'),
-                icon = 'fa-solid fa-toggle-off',
-                onSelect = function ()
-                    TriggerServerEvent('skys_multijob:server:toggleDuty')
-                end
-            },
-            {
-                title = locale('menu.back'),
-                description = locale('menu.back_description'),
-                icon = 'fa-solid fa-arrow-left',
-                onSelect = function ()
-                    lib.showContext('multijob')
-                end
-            }
+    local options = {
+        isCurrentJob and {
+            title = locale('menu.remove_job'),
+            description = locale('menu.remove_job_description'),
+            icon = 'fa-solid fa-trash-can',
+            onSelect = function ()
+                TriggerServerEvent('skys_multijob:server:removeJob', job)
+            end
+        } or {
+            title = locale('menu.select_job'),
+            description = locale('menu.select_job_description'),
+            icon = 'fa-solid fa-arrow-right-arrow-left',
+            onSelect = function ()
+                TriggerServerEvent('skys_multijob:server:switchJob', job)
+            end
+        },
+        {
+            title = locale('menu.toggle_duty'),
+            description = locale('menu.toggle_duty_description'),
+            icon = 'fa-solid fa-toggle-off',
+            onSelect = function ()
+                TriggerServerEvent('skys_multijob:server:toggleDuty')
+            end
+        },
+        {
+            title = locale('menu.back'),
+            description = locale('menu.back_description'),
+            icon = 'fa-solid fa-arrow-left',
+            onSelect = function ()
+                lib.showContext('multijob')
+            end
         }
-    else
-        options = {
-            {
-                title = locale('menu.select_job'),
-                description = locale('menu.select_job_description'),
-                icon = 'fa-solid fa-arrow-right-arrow-left',
-                onSelect = function ()
-                    TriggerServerEvent('skys_multijob:server:switchJob', job)
-                end
-            },
-            {
-                title = locale('menu.remove_job'),
-                description = locale('menu.remove_job_description'),
-                icon = 'fa-solid fa-trash-can',
-                onSelect = function ()
-                    TriggerServerEvent('skys_multijob:server:removeJob', job)
-                end
-            },
-            {
-                title = locale('menu.back'),
-                description = locale('menu.back_description'),
-                icon = 'fa-solid fa-arrow-left',
-                onSelect = function ()
-                    lib.showContext('multijob')
-                end
-            }
-        }
-    end
+    }
 
     lib.registerContext({
         id = 'job_menu',
