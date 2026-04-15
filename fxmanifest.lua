@@ -2,7 +2,7 @@ fx_version "cerulean"
 game "gta5"
 
 author "Cocodrulo"
-version "1.0.0"
+version '1.1.0'
 description "A multi-job script for any framework"
 
 shared_scripts {
